@@ -16,7 +16,7 @@ pub enum LayerEntry {
 pub struct Project {
     pub name: String,
     pub poky_revision: GitRevisionSpecifier,
-    pub layer_entries: Vec<LayerEntry>
+    pub layer_entries: Vec<LayerEntry>,
 }
 
 /// Represents the output structure to generate
@@ -39,10 +39,10 @@ impl GeneratorStructure {
 
 #[cfg(test)]
 mod test {
-    use crate::layers::domain::generator::generator_structure::{Project, LayerEntry};
     use crate::layers::domain::config_file::test::EXAMPLE_TOML_1;
-    use crate::layers::domain::generator::project_config_to_generator::project_config_to_generator;
     use crate::layers::domain::config_file::YoctoctlFile;
+    use crate::layers::domain::generator::generator_structure::{LayerEntry, Project};
+    use crate::layers::domain::generator::project_config_to_generator::project_config_to_generator;
 
     #[test]
     fn converts_basic_config_to_generator() {
@@ -53,9 +53,12 @@ mod test {
             .collect();
 
         let project_1 = projects.first().unwrap();
-        let layer_2 = project_1.layer_entries.iter().nth(1).unwrap();
+        let meta_oe = project_1.layer_entries.iter().find(|item| match item {
+            LayerEntry::GitSubmodule { submodule_name, .. } => submodule_name == "meta-oe",
+            _ => false
+        }).unwrap();
 
-        match layer_2 {
+        match meta_oe {
             LayerEntry::GitSubmodule { git_url, submodule_name, git_revision, layer_entries } => {
                 assert_eq!(layer_entries.len(), 2)
             }
