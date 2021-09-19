@@ -14,6 +14,7 @@ pub enum LayerEntry {
 }
 
 pub struct Project {
+    pub project_id: String,
     pub name: String,
     pub poky_revision: GitRevisionSpecifier,
     pub layer_entries: Vec<LayerEntry>,
@@ -43,6 +44,7 @@ mod test {
     use crate::layers::domain::config_file::YoctoctlFile;
     use crate::layers::domain::generator::generator_structure::{LayerEntry, Project};
     use crate::layers::domain::generator::project_config_to_generator::project_config_to_generator;
+    use crate::layers::domain::artifacts::project_folders::ProjectFolders;
 
     #[test]
     fn converts_basic_config_to_generator() {
@@ -66,5 +68,20 @@ mod test {
                 panic!("epojig")
             }
         }
+    }
+
+    #[test]
+    fn creates_correct_output_artifacts() {
+        let config = YoctoctlFile::new_from_str(EXAMPLE_TOML_1).unwrap();
+
+        let projects: Vec<Project> = config.projects.into_iter()
+            .map(project_config_to_generator)
+            .collect();
+
+        let project_1 = projects.first().unwrap();
+
+        let folders = ProjectFolders::new(project_1);
+
+        println!("folders: {:?}", folders);
     }
 }

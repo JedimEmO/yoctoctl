@@ -4,6 +4,7 @@ use crate::layers::domain::generator::layer_config_to_entries::layer_config_to_e
 
 pub(crate) fn project_config_to_generator(project: ConfigProject) -> Project {
     Project {
+        project_id: project.project_id,
         name: project.name,
         poky_revision: project.poky_revision,
         layer_entries: layer_config_to_entries(project.layers)

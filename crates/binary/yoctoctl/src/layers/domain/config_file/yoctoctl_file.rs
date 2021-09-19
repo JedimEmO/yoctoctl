@@ -19,6 +19,7 @@ pub enum Layer {
 /// init-env entry for build configuration
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Project {
+    pub project_id: String,
     pub name: String,
     pub poky_revision: GitRevisionSpecifier,
     pub layers: Vec<Layer>,
@@ -42,6 +43,7 @@ pub mod test {
     use crate::layers::domain::config_file::YoctoctlFile;
 
     pub const EXAMPLE_TOML_1: &str = r#"[[projects]]
+project_id = "my-test"
 name="test 1"
 poky_revision = { branch = "hardknott" }
 
