@@ -22,7 +22,7 @@ pub struct Project {
 
 /// Represents the output structure to generate
 pub struct GeneratorStructure {
-    projects: Vec<Project>,
+    pub projects: Vec<Project>,
 }
 
 impl GeneratorStructure {
