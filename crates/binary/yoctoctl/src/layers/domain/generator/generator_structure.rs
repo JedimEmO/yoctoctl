@@ -81,7 +81,5 @@ mod test {
         let project_1 = projects.first().unwrap();
 
         let folders = ProjectFolders::new(project_1);
-
-        println!("folders: {:?}", folders);
     }
 }

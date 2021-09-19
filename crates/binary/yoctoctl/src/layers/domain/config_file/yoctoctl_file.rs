@@ -66,6 +66,5 @@ name = "meta-my-internal"
     #[test]
     fn parses_file_correctly() {
         let file = YoctoctlFile::new_from_str(EXAMPLE_TOML_1).unwrap();
-        println!("parsed file: {:?}", file);
     }
 }

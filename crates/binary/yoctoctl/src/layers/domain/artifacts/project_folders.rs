@@ -5,8 +5,8 @@ use crate::layers::domain::generator::generator_structure::{LayerEntry, Project}
 
 #[derive(Debug)]
 pub enum Folder {
-    Conf { name: String, bblayers: BBLayers, layer_conf: LayerConf },
-    Submodule { name: String, git_url: String, git_revision: Option<GitRevisionSpecifier> },
+    Conf { project_id: String, name: String, bblayers: BBLayers, layer_conf: LayerConf },
+    Submodule { project_id: String, name: String, git_url: String, git_revision: Option<GitRevisionSpecifier> },
 }
 
 #[derive(Debug)]
@@ -22,6 +22,7 @@ impl ProjectFolders {
                 match layer_entry {
                     LayerEntry::GitSubmodule { submodule_name, git_revision, git_url, .. } => {
                         Folder::Submodule {
+                            project_id: project.project_id.clone(),
                             name: submodule_name.clone(),
                             git_revision: git_revision.clone(),
                             git_url: git_url.clone(),
@@ -29,6 +30,7 @@ impl ProjectFolders {
                     }
                     // Local layers have a conf directory
                     LayerEntry::Local(layer) => Folder::Conf {
+                        project_id: project.project_id.clone(),
                         name: format!("{}/conf", layer),
                         bblayers: BBLayers::new_from_project(project),
                         layer_conf: LayerConf {
@@ -40,6 +42,7 @@ impl ProjectFolders {
             .collect();
 
         folders.push(Folder::Submodule {
+            project_id: project.project_id.clone(),
             name: "poky".to_string(),
             git_url: "git://git.yoctoproject.org/poky.git".to_string(),
             git_revision: Some(project.poky_revision.clone()),

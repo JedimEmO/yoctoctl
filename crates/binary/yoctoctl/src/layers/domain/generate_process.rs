@@ -59,6 +59,6 @@ mod test {
 
         generate_yocto_projects(EXAMPLE_TOML_1, writer).unwrap();
 
-        println!("{:?}", data.read().unwrap());
+        assert_eq!(data.read().unwrap().len(), 3);
     }
 }

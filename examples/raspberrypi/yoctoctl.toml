@@ -1,4 +1,5 @@
 [[projects]]
+project_id = "rpi-example-1"
 name = "Example raspberry pi project"
 poky_revision = { branch = "hardknott" }
 

@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use itertools::Itertools;
 
 use crate::layers::domain::config_file::{GitRevisionSpecifier, Layer};
@@ -32,7 +30,7 @@ fn map_layer_group_to_layer_entry(entry: (String, Vec<Layer>)) -> Option<LayerEn
         .into_iter()
         .fold(None, |current, item| {
             match current {
-                Some(LayerEntry::GitSubmodule { git_url, submodule_name, git_revision, mut layer_entries }) => {
+                Some(LayerEntry::GitSubmodule { git_url, submodule_name, git_revision, layer_entries }) => {
                     Some(LayerEntry::GitSubmodule {
                         git_url,
                         submodule_name,
@@ -89,6 +87,7 @@ fn layer_to_folder_name(cfg: &Layer) -> String {
         }
     }
 }
+
 fn opt_git_rev_to_string(revision: &Option<GitRevisionSpecifier>) -> String {
     match revision {
         Some(r) => {

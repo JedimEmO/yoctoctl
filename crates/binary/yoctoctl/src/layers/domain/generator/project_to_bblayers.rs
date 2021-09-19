@@ -34,7 +34,5 @@ mod test {
         let project_1 = projects.first().unwrap();
 
         let bblayers = project_to_bblayers(&project_1);
-
-        println!("{}", bblayers.to_string());
     }
 }

@@ -1,4 +1,3 @@
-use crate::layers::domain::generator::generator_structure::GeneratorStructure;
 use crate::layers::domain::artifacts::project_folders::Folder;
 use std::error::Error;
 
