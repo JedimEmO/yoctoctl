@@ -1,3 +1,5 @@
+use std::error::Error;
+
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(untagged)]
 pub enum GitRevisionSpecifier {
@@ -9,7 +11,7 @@ pub enum GitRevisionSpecifier {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(untagged)]
 pub enum Layer {
-    Submodule { name: String, git_url: String, revision: Option<GitRevisionSpecifier> },
+    Submodule { submodule_name: String, git_url: String, relative_path: Option<String>, revision: Option<GitRevisionSpecifier> },
     InRepo { name: String },
 }
 
@@ -27,26 +29,41 @@ pub struct YoctoctlFile {
     pub projects: Vec<Project>,
 }
 
+impl YoctoctlFile {
+    pub fn new_from_str(input: &str) -> Result<YoctoctlFile, Box<dyn Error>> {
+        toml::from_str(input)
+            .map_err(|e| e.into())
+    }
+}
+
 
 #[cfg(test)]
-mod test {
+pub mod test {
     use crate::layers::domain::config_file::YoctoctlFile;
 
-    #[test]
-    fn parses_file_correctly() {
-        let example_toml = r#"[[projects]]
+    pub const EXAMPLE_TOML_1: &str = r#"[[projects]]
 name="test 1"
 poky_revision = { branch = "hardknott" }
+
 [[projects.layers]]
 name = "meta-my-internal"
 
 [[projects.layers]]
-name = "meta-oe/meta-python"
+submodule_name = "meta-oe"
+relative_path = "meta-python"
+git_url = "git://git.openembedded.org/meta-openembedded"
+revision = { hash = "123"}
+
+[[projects.layers]]
+submodule_name = "meta-oe"
+relative_path = "meta-networking"
 git_url = "git://git.openembedded.org/meta-openembedded"
 revision = { hash = "123"}
 "#;
-        let parsed: YoctoctlFile = toml::from_str(example_toml).unwrap();
 
-        println!("parsed file: {:?}", parsed);
+    #[test]
+    fn parses_file_correctly() {
+        let file = YoctoctlFile::new_from_str(EXAMPLE_TOML_1).unwrap();
+        println!("parsed file: {:?}", file);
     }
 }

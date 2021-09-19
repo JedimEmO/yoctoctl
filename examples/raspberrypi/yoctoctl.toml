@@ -3,17 +3,19 @@ name = "Example raspberry pi project"
 poky_revision = { branch = "hardknott" }
 
 [[projects.layers]]
-name = "meta-openembedded/meta-python"
+submodule_name = "meta-openembedded"
+relative_path = "meta-python"
 git_url = "git://git.openembedded.org/meta-openembedded"
 revision = { branch = "hardknott" }
 
 [[projects.layers]]
-name = "meta-openembedded/meta-networking"
+submodule_name = "meta-openembedded"
+relative_path = "meta-networking"
 git_url = "git://git.openembedded.org/meta-openembedded"
 revision = { branch = "hardknott" }
 
 [[projects.layers]]
-name = "meta-raspberrypi"
+submodule_name = "meta-raspberrypi"
 git_url = "git://git.yoctoproject.org/meta-raspberrypi"
 revision = { branch = "hardknott" }
 
