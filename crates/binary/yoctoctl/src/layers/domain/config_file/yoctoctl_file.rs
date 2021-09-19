@@ -46,9 +46,6 @@ name="test 1"
 poky_revision = { branch = "hardknott" }
 
 [[projects.layers]]
-name = "meta-my-internal"
-
-[[projects.layers]]
 submodule_name = "meta-oe"
 relative_path = "meta-python"
 git_url = "git://git.openembedded.org/meta-openembedded"
@@ -59,6 +56,9 @@ submodule_name = "meta-oe"
 relative_path = "meta-networking"
 git_url = "git://git.openembedded.org/meta-openembedded"
 revision = { hash = "123"}
+
+[[projects.layers]]
+name = "meta-my-internal"
 "#;
 
     #[test]
