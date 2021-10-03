@@ -6,7 +6,8 @@ pub(crate) fn project_config_to_generator(project: ConfigProject) -> Project {
     Project {
         project_id: project.project_id,
         name: project.name,
-        poky_revision: project.poky_revision,
+        poky_url: project.bitbake_git_repo_url,
+        poky_revision: project.bitbake_revision,
         layer_entries: layer_config_to_entries(project.layers)
     }
 }

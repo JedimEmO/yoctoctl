@@ -16,6 +16,7 @@ pub enum LayerEntry {
 pub struct Project {
     pub project_id: String,
     pub name: String,
+    pub poky_url: String,
     pub poky_revision: GitRevisionSpecifier,
     pub layer_entries: Vec<LayerEntry>,
 }

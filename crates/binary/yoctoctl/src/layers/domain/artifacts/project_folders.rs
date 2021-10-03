@@ -41,13 +41,6 @@ impl ProjectFolders {
             })
             .collect();
 
-        folders.push(Folder::Submodule {
-            project_id: project.project_id.clone(),
-            name: "poky".to_string(),
-            git_url: "git://git.yoctoproject.org/poky.git".to_string(),
-            git_revision: Some(project.poky_revision.clone()),
-        });
-
         ProjectFolders {
             project_id: project.project_id.clone(),
             folders,

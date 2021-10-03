@@ -2,7 +2,7 @@ use std::error::Error;
 use std::path::Path;
 use std::sync::RwLock;
 
-use git2::{Repository, SubmoduleUpdateOptions};
+use git2::{BranchType, ObjectType, Repository, ResetType, SubmoduleUpdateOptions};
 
 use crate::layers::domain::artifacts::project_folders::Folder;
 use crate::layers::domain::config_file::GitRevisionSpecifier;
@@ -19,38 +19,37 @@ impl YoctoctlProjectWriter for FsWriter {
             Folder::Submodule { name, project_id, git_url, git_revision } => {
                 // Add a submodule
                 let submodule_path = format!("{}/layers/{}", project_id, name);
+                let submodule_repo_path = self.git_repo.read().unwrap().path().join(format!("../{}", submodule_path.as_str()));
 
                 if self.git_repo.read().unwrap().find_submodule(submodule_path.as_str()).is_err() {
-                    {
-                        let repo_read = self.git_repo.read().unwrap();
+                    let repo_read = self.git_repo.read().unwrap();
 
+                    let mut submodule = repo_read.submodule(git_url.as_str(), Path::new(submodule_path.as_str()), true)
+                        .unwrap();
 
-                        let mut submodule = repo_read.submodule(git_url.as_str(), Path::new(submodule_path.as_str()), true)
-                            .unwrap();
-                        submodule.init(false).unwrap();
-                    };
+                    std::fs::remove_dir_all(submodule_repo_path.clone()).unwrap();
+                    Repository::clone(git_url.as_str(), submodule_repo_path.clone()).unwrap();
 
-                    {
-                        let mut repo = self.git_repo.write().unwrap();
-
-                        repo.submodule_set_branch(submodule_path.as_str(), match git_revision {
-                            Some(GitRevisionSpecifier::Branch { branch }) => Some(branch),
-                            _ => None
-                        }.unwrap().as_str()).unwrap();
-                    }
-
-                    {
-                        let repo_read = self.git_repo.read().unwrap();
-
-                        let mut submodule = repo_read.find_submodule(submodule_path.as_str()).unwrap();
-                        submodule.sync().unwrap();
-                        println!("Cloning {} into {}...", git_url, submodule_path);
-                        submodule.clone(None).unwrap();
-                        submodule.add_to_index(true).unwrap();
-                        ;
-                        submodule.add_finalize().unwrap();
-                    }
+                    submodule.add_to_index(false).unwrap();
+                    submodule.add_finalize().unwrap();
                 }
+
+
+                let sm_repo = Repository::open(submodule_repo_path).unwrap();
+
+                let mut sm_remote = sm_repo.find_remote("origin").unwrap();
+                sm_remote.download(&[] as &[&str], None).unwrap();
+
+                let revision = match git_revision {
+                    Some(GitRevisionSpecifier::Branch { branch }) => {
+                        println!("checking out: refs/remotes/origin/{}", branch);
+                        sm_repo.find_reference(format!("refs/remotes/origin/{}", branch).as_str()).unwrap()
+                    }
+                    _ => unimplemented!()
+                };
+
+                sm_repo.set_head_detached(revision.target().unwrap()).unwrap();
+                sm_repo.reset(&revision.peel(ObjectType::Any).unwrap(), ResetType::Hard, None).unwrap();
             }
             Folder::Conf { name, project_id, layer_conf, bblayers } => {
                 let rel_path = format!("{}/layers/{}", project_id, name);

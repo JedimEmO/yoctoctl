@@ -21,7 +21,10 @@ pub enum Layer {
 pub struct Project {
     pub project_id: String,
     pub name: String,
-    pub poky_revision: GitRevisionSpecifier,
+    pub bitbake_revision: GitRevisionSpecifier,
+    pub bitbake_git_repo_url: String,
+    pub openembedded_core_revision: GitRevisionSpecifier,
+    pub openembedded_core_git_repo_url: String,
     pub layers: Vec<Layer>,
 }
 
@@ -45,7 +48,10 @@ pub mod test {
     pub const EXAMPLE_TOML_1: &str = r#"[[projects]]
 project_id = "my-test"
 name="test 1"
-poky_revision = { branch = "hardknott" }
+bitbake_revision = { branch = "hardknott" }
+bitbake_git_repo_url = "git://git.openembedded.org/bitbake"
+openembedded_core_revision = { branch = "hardknott" }
+openembedded_core_git_repo_url = "git://git.openembedded.org/openembedded-core"
 
 [[projects.layers]]
 submodule_name = "meta-oe"
