@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use crate::layers::domain::config_file::{GitRevisionSpecifier, YoctoctlFile};
+use crate::layers::domain::config_file::{GitRevisionSpecifier, YoctoctlFile, GitModule};
 use crate::layers::domain::generator::project_config_to_generator::project_config_to_generator;
 
 pub enum LayerEntry {
@@ -16,9 +16,9 @@ pub enum LayerEntry {
 pub struct Project {
     pub project_id: String,
     pub name: String,
-    pub poky_url: String,
-    pub poky_revision: GitRevisionSpecifier,
     pub layer_entries: Vec<LayerEntry>,
+    pub bitbake: GitModule,
+    pub openembedded_core: GitModule
 }
 
 /// Represents the output structure to generate

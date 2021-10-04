@@ -2,11 +2,13 @@
 project_id = "rpi-example-1"
 name = "Example raspberry pi project"
 
-bitbake_revision = { branch = "hardknott" }
-bitbake_git_repo_url = "https://github.com/openembedded/bitbake.git"
+[projects.bitbake]
+revision = { tag = "1.50.3" }
+git_url = "https://github.com/openembedded/bitbake.git"
 
-openembedded_core_revision = { branch = "hardknott" }
-openembedded_core_git_repo_url = "https://github.com/openembedded/openembedded-core.git"
+[projects.openembedded_core]
+revision = { branch = "hardknott" }
+git_url = "https://github.com/openembedded/openembedded-core.git"
 
 [[projects.layers]]
 submodule_name = "meta-openembedded"
@@ -18,7 +20,7 @@ revision = { branch = "hardknott" }
 submodule_name = "meta-openembedded"
 relative_path = "meta-networking"
 git_url = "https://github.com/openembedded/meta-openembedded.git"
-revision = { branch = "dunfell" }
+revision = { branch = "hardknott" }
 
 [[projects.layers]]
 submodule_name = "meta-raspberrypi"

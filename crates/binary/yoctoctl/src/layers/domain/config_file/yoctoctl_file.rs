@@ -15,16 +15,20 @@ pub enum Layer {
     InRepo { name: String },
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct GitModule {
+    pub revision: GitRevisionSpecifier,
+    pub git_url: String
+}
+
 /// Each project entry will correspond to one top level
 /// init-env entry for build configuration
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Project {
     pub project_id: String,
     pub name: String,
-    pub bitbake_revision: GitRevisionSpecifier,
-    pub bitbake_git_repo_url: String,
-    pub openembedded_core_revision: GitRevisionSpecifier,
-    pub openembedded_core_git_repo_url: String,
+    pub bitbake: GitModule,
+    pub openembedded_core: GitModule,
     pub layers: Vec<Layer>,
 }
 
@@ -48,10 +52,14 @@ pub mod test {
     pub const EXAMPLE_TOML_1: &str = r#"[[projects]]
 project_id = "my-test"
 name="test 1"
-bitbake_revision = { branch = "hardknott" }
-bitbake_git_repo_url = "git://git.openembedded.org/bitbake"
-openembedded_core_revision = { branch = "hardknott" }
-openembedded_core_git_repo_url = "git://git.openembedded.org/openembedded-core"
+
+[projects.bitbake]
+revision = { branch = "hardknott" }
+git_url = "git://git.openembedded.org/bitbake"
+
+[projects.openembedded_core]
+revision = { branch = "hardknott" }
+git_url = "git://git.openembedded.org/openembedded-core"
 
 [[projects.layers]]
 submodule_name = "meta-oe"
